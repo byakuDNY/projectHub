@@ -1,0 +1,7 @@
+pnpm add -D eslint-config-prettier @trivago/prettier-plugin-sort-imports prettier prettier-plugin-tailwindcss eslint-plugin-check-file
+
+pnpm dlx shadcn@latest init
+pnpm dlx shadcn@latest add button
+pnpm add next-themes
+
+pnpm add @trivago/prettier-plugin-sort-imports@4.3.0 --save-dev
