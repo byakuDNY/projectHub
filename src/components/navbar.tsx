@@ -19,9 +19,10 @@ import {
 
 const NAV_ITEMS = [
   { name: "Home", href: "/" },
-  { name: "Services", href: "/services" },
-  { name: "Contact", href: "/contact" },
-  { name: "About", href: "/about" },
+  { name: "Features", href: "/features" },
+  { name: "Solutions", href: "/solutions" },
+  { name: "Pricing", href: "/pricing" },
+  { name: "Dashboard", href: "/dashboard" },
 ];
 
 const Navbar = () => {
@@ -45,14 +46,12 @@ const Navbar = () => {
         </nav>
 
         <div className="flex items-center gap-4">
-          <div className="hidden sm:flex sm:items-center sm:gap-4">
-            <ModeToggle />
-            <UserDropdownMenu />
-          </div>
+          <ModeToggle />
+          <UserDropdownMenu />
           <Button
             variant="ghost"
             size="icon"
-            className="sm:hidden"
+            className="border sm:hidden"
             onClick={toggleMobileMenu}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}>
             {isMobileMenuOpen ? (
@@ -127,10 +126,6 @@ const MobileNav = ({
           </li>
         ))}
       </ul>
-      <div className="flex items-center justify-between px-4 py-2">
-        <ModeToggle />
-        <UserDropdownMenu />
-      </div>
     </nav>
   );
 };
