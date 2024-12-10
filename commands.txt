@@ -5,3 +5,6 @@ pnpm dlx shadcn@latest add button
 pnpm add next-themes
 
 pnpm add @trivago/prettier-plugin-sort-imports@4.3.0 --save-dev
+
+pnpm add drizzle-orm pg dotenv
+pnpm add -D drizzle-kit tsx @types/pg

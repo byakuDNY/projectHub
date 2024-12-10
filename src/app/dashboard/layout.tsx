@@ -11,12 +11,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-screen w-screen">
+    <main className="h-screen w-screen">
       <SidebarProvider>
         <AppSidebar />
         <SidebarTrigger />
         <SidebarInset>{children}</SidebarInset>
       </SidebarProvider>
-    </div>
+    </main>
   );
 }
