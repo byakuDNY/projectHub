@@ -25,18 +25,22 @@ const formSchema = z.object({
     .max(30, {
       message: "Username must be at most 30 characters.",
     }),
-  email: z.string().email(),
-  phone: z.string().min(8),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  phone: z.string().min(8, {
+    message: "Phone number must be at least 8 characters.",
+  }),
 });
 
 const ClientForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    // defaultValues: {
-    //   name: "",
-    //   email: "",
-    //   phone: "",
-    // },
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+    },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -44,9 +48,17 @@ const ClientForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="mx-auto w-full p-6 shadow-md">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-foreground">
+          Client Information
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Please fill in your details below.
+        </p>
+      </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
             name="name"
@@ -54,7 +66,7 @@ const ClientForm = () => {
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="John Doe" {...field} />
                 </FormControl>
                 <FormDescription>
                   This is your public display name.
@@ -63,7 +75,49 @@ const ClientForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="john@example.com"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  We'll never share your email with anyone else.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone Number</FormLabel>
+                <FormControl>
+                  <Input
+                    type="tel"
+                    placeholder="+1 (555) 000-0000"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Please enter your phone number with country code.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" className="w-full">
+            Submit
+          </Button>
         </form>
       </Form>
     </div>

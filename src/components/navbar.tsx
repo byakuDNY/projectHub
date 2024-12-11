@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -12,8 +13,11 @@ import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
@@ -35,9 +39,7 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-10 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold">📦 Logo</span>
-        </Link>
+        <Logo />
 
         <nav className="hidden h-full sm:ml-6 sm:flex sm:items-center sm:gap-8">
           {NAV_ITEMS.map((item) => (
@@ -73,6 +75,26 @@ const Navbar = () => {
     </header>
   );
 };
+
+export const Logo = () => (
+  <Link href="/dashboard" className="flex items-center gap-2">
+    <Image
+      src="/favicon-light.svg"
+      alt="ProjectHub Logo"
+      width={40}
+      height={40}
+      className="dark:hidden"
+    />
+    <Image
+      src="/favicon-dark.svg"
+      alt="ProjectHub Logo"
+      width={40}
+      height={40}
+      className="hidden dark:block"
+    />
+    <span className="text-xl font-bold">ProjectHub</span>
+  </Link>
+);
 
 const NavItem = ({
   name,
@@ -130,7 +152,7 @@ const MobileNav = ({
   );
 };
 
-const UserDropdownMenu = () => {
+export const UserDropdownMenu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -144,7 +166,7 @@ const UserDropdownMenu = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
-        <div className="flex items-center p-2">
+        <DropdownMenuLabel className="flex items-center space-y-1">
           <Avatar className="h-8 w-8">
             <AvatarFallback>EC</AvatarFallback>
           </Avatar>
@@ -152,19 +174,28 @@ const UserDropdownMenu = () => {
             <p className="text-sm font-medium">User Name</p>
             <p className="text-xs text-muted-foreground">user@example.com</p>
           </div>
-        </div>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/profile">View Profile</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/chat">My Conversations </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/mis-materiales">My Materials</Link>
-        </DropdownMenuItem>
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            Profile
+            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            Billing
+            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            Settings
+            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>New Team</DropdownMenuItem>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Log Out </DropdownMenuItem>
+        <DropdownMenuItem>
+          Log out
+          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

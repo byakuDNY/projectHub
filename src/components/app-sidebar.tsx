@@ -172,7 +172,7 @@ const sidebarLinks = [
 
 export function AppSidebar() {
   return (
-    <Sidebar variant="inset">
+    <Sidebar variant="inset" className="mt-16">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
