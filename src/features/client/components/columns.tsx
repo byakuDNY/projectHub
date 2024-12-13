@@ -61,19 +61,6 @@ export const columns: ColumnDef<ClientProps>[] = [
     header: "Phone",
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
-  },
-  {
     id: "actions",
     cell: ({ row }) => {
       const client = row.original;
