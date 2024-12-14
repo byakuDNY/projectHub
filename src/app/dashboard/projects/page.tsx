@@ -1,12 +1,23 @@
-import db from "@/db";
-import { projectsTable } from "@/db/schema";
-import columns from "@/features/project/components/columns";
-import DataTable from "@/features/project/components/data-table";
+import columns from "@/features/project/dashboard-table/columns";
+import DataTable from "@/features/project/dashboard-table/data-table";
 
 // import FormDialog from "@/features/project/components/form-dialog";
 
+const projects = [
+  {
+    id: 1,
+    name: "Project 1",
+    description: "This is a project description",
+    status: "active",
+    startDate: new Date(),
+    endDate: new Date(),
+    budget: 1000,
+    clientId: 1,
+  },
+];
+
 const Projects = async () => {
-  const projects = await db.select().from(projectsTable).execute();
+  // const projects = await db.select().from(projectsTable).execute();
 
   return (
     <div className="container mx-auto space-y-5 p-10">

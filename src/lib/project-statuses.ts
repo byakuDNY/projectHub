@@ -2,8 +2,8 @@ import { CheckCircle, CircleOff, Timer } from "lucide-react";
 
 export const statuses = [
   {
-    value: "pending",
-    label: "Pending",
+    value: "active",
+    label: "Active",
     icon: Timer,
   },
   {

@@ -5,8 +5,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ProjectsType } from "@/db/schema/projects-table";
 import { statuses } from "@/lib/project-statuses";
 
-import { DataTableColumnHeader } from "./data-table-column-header";
-import { DataTableRowActions } from "./data-table-row-actions";
+import { DataTableColumnHeader } from "./data-table/column-header";
+import { DataTableRowActions } from "./data-table/row-actions";
 
 const columns: ColumnDef<ProjectsType>[] = [
   //   {
@@ -80,10 +80,11 @@ const columns: ColumnDef<ProjectsType>[] = [
   //     },
   //   },
   {
-    accessorKey: "title",
+    accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
+    enableHiding: false,
   },
   {
     accessorKey: "status",
