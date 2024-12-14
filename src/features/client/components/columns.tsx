@@ -3,10 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
-import { ClientProps } from "@/app/dashboard/clients/page";
-
-import { Button } from "../../../components/ui/button";
-import { Checkbox } from "../../../components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +12,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+import { ClientsType } from "@/db/schema/clients-table";
 
-export const columns: ColumnDef<ClientProps>[] = [
+const columns: ColumnDef<ClientsType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -76,7 +75,9 @@ export const columns: ColumnDef<ClientProps>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(client.name)}>
+              onClick={() =>
+                navigator.clipboard.writeText(client.id as string)
+              }>
               Copy payment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -88,3 +89,5 @@ export const columns: ColumnDef<ClientProps>[] = [
     },
   },
 ];
+
+export default columns;

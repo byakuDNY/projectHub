@@ -1,4 +1,12 @@
-import { index, pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import {
+  index,
+  numeric,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 import clientsTable from "./clients-table";
 import timestamps from "./timestamp";
@@ -10,6 +18,7 @@ const projectsTable = pgTable(
     id: uuid().primaryKey().defaultRandom(),
     name: varchar({ length: 255 }).notNull(),
     description: varchar({ length: 255 }),
+    content: text(),
     userId: uuid()
       .references(() => usersTable.id, { onDelete: "cascade" })
       .notNull(),
@@ -18,8 +27,10 @@ const projectsTable = pgTable(
         onDelete: "cascade",
       })
       .notNull(),
+    budget: numeric({ precision: 10, scale: 2 }).notNull(),
     status: varchar({ length: 255 }).default("active").notNull(),
-    endDate: timestamp(),
+    startDate: timestamp().notNull(),
+    endDate: timestamp().notNull(),
     ...timestamps,
   },
   (projects) => [
@@ -27,4 +38,5 @@ const projectsTable = pgTable(
   ],
 );
 
+export type ProjectsType = typeof projectsTable.$inferInsert;
 export default projectsTable;

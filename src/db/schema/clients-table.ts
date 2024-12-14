@@ -7,6 +7,7 @@ const clientsTable = pgTable("clients", {
   name: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 320 }).unique().notNull(),
   phone: varchar({ length: 255 }).unique().notNull(),
+  country: varchar({ length: 255 }).notNull(),
   ...timestamps,
 });
 

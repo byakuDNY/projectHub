@@ -1,7 +1,7 @@
 import db from "@/db";
 import { clientsTable } from "@/db/schema";
-import { columns } from "@/features/client/components/columns";
-import { DataTable } from "@/features/client/components/data-table";
+import columns from "@/features/client/components/columns";
+import DataTable from "@/features/client/components/data-table";
 import FormDialog from "@/features/client/components/form-dialog";
 
 const Clients = async () => {

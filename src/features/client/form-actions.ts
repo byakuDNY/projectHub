@@ -22,13 +22,20 @@ export const getClients = async () => {
   }
 };
 
-export const insertClient = async ({ name, email, phone }: ClientsType) => {
+export const insertClient = async ({
+  name,
+  email,
+  phone,
+  country,
+}: ClientsType) => {
   try {
-    db.insert(clientsTable)
+    await db
+      .insert(clientsTable)
       .values({
         name: name,
         email: email,
         phone: phone,
+        country: country,
       })
       .execute();
 

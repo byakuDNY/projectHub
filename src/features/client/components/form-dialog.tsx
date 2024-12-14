@@ -44,6 +44,9 @@ const formSchema = z.object({
   phone: z.string().min(8, {
     message: "Phone number must be at least 8 characters.",
   }),
+  country: z.string().min(2, {
+    message: "Country must be at least 2 characters.",
+  }),
 });
 
 const FormDialog = () => {
@@ -59,6 +62,7 @@ const FormDialog = () => {
       name: "",
       email: "",
       phone: "",
+      country: "",
     },
   });
 
@@ -67,8 +71,8 @@ const FormDialog = () => {
     setErrorMessage("");
 
     try {
-      const { name, email, phone } = values;
-      await insertClient({ name, email, phone });
+      const { name, email, phone, country } = values;
+      await insertClient({ name, email, phone, country });
       toast({
         title: "Success",
         description: "Client created successfully.",
@@ -76,7 +80,7 @@ const FormDialog = () => {
       form.reset();
       setOpen(false);
     } catch (error) {
-      setErrorMessage("Failed to add client.");
+      setErrorMessage(`Failed to add client: ${error}`);
       console.error("Failed to add client.:", error);
       toast({
         title: "Error",
@@ -152,12 +156,28 @@ const FormDialog = () => {
               )}
             />
 
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <FormControl>
+                    <Input placeholder="United States" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
               Submit
             </Button>
 
-            {errorMessage && <p className="error-message">*{errorMessage}</p>}
+            {errorMessage && (
+              <p className="text-center text-red-500">*{errorMessage}</p>
+            )}
           </form>
         </Form>
       </DialogContent>
