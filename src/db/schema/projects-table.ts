@@ -29,7 +29,7 @@ const projectsTable = pgTable(
       .notNull(),
     budget: numeric({ precision: 10, scale: 2 }).notNull(),
     status: varchar({ length: 255 }).default("active").notNull(),
-    startDate: timestamp().notNull(),
+    startDate: timestamp().defaultNow().notNull(),
     endDate: timestamp().notNull(),
     ...timestamps,
   },

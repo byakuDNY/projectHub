@@ -7,6 +7,11 @@ export const statuses = [
     icon: Timer,
   },
   {
+    value: "inactive",
+    label: "Inactive",
+    icon: Timer,
+  },
+  {
     value: "completed",
     label: "Completed",
     icon: CheckCircle,

@@ -105,9 +105,7 @@ const FormDialog = () => {
           Please fill in your client details below.
         </DialogDescription>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6 bg-slate-600">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="name"

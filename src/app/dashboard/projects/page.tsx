@@ -1,7 +1,6 @@
+import ProjectForm from "@/features/project/create/project-form";
 import columns from "@/features/project/dashboard-table/columns";
 import DataTable from "@/features/project/dashboard-table/data-table";
-
-// import FormDialog from "@/features/project/components/form-dialog";
 
 const projects = [
   {
@@ -27,6 +26,7 @@ const Projects = async () => {
         </h1>
 
         {/* <FormDialog /> */}
+        <ProjectForm />
       </div>
       <DataTable columns={columns} data={projects} />
     </div>

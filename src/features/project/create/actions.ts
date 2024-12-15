@@ -5,10 +5,11 @@ import { revalidatePath } from "next/cache";
 import { desc } from "drizzle-orm";
 
 import db from "@/db";
-import { projectsTable } from "@/db/schema";
-import { ProjectsType } from "@/db/schema/projects-table";
+import { clientsTable, projectsTable } from "@/db/schema";
 
-export const getprojects = async () => {
+import { ProjectFormSchema } from "./zod-schema";
+
+export const getProjects = async () => {
   try {
     const projects = await db
       .select()
@@ -22,20 +23,44 @@ export const getprojects = async () => {
   }
 };
 
-export const insertproject = async ({
+export const getUsersIdAndName = async () => {
+  try {
+    const users = await db
+      .select({ id: clientsTable.id, name: clientsTable.name })
+      .from(clientsTable)
+      .execute();
+    return users;
+  } catch (error) {
+    console.error("Error getting users:", error);
+    throw error;
+  }
+};
+
+export const insertProject = async ({
   name,
-  email,
-  phone,
-  country,
-}: ProjectsType) => {
+  description,
+  content,
+  clientId,
+  budget,
+  status,
+  startDate,
+  endDate,
+}: ProjectFormSchema) => {
+  const userId = "323";
   try {
     await db
       .insert(projectsTable)
       .values({
         name: name,
-        email: email,
-        phone: phone,
-        country: country,
+        description: description,
+        content: content,
+        userId: userId,
+        clientId: clientId,
+        budget: budget,
+        status: status,
+        startDate: startDate,
+        endDate: endDate,
+        createdAt: new Date(),
       })
       .execute();
 
