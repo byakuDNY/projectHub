@@ -58,7 +58,6 @@ const ProjectForm = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [comboboxOpen, setComboboxOpen] = useState(false);
-  const [comboboxValue, setComboboxValue] = useState("");
   const [clients, setClients] = useState([
     {
       id: "",
@@ -174,7 +173,7 @@ const ProjectForm = () => {
                 <FormItem>
                   <FormLabel>Project Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="John Doe" {...field} />
+                    <Input placeholder="John Doe" {...field} type="text" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -199,64 +198,59 @@ const ProjectForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Client</FormLabel>
-                  <FormControl>
-                    {/* <Input
-                      type="tel"
-                      placeholder="+1 (555) 000-0000"
-                      {...field}
-                    /> */}
-                    {/* <ComboboxDemo value={field} /> */}
-                    <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
-                      <PopoverTrigger asChild>
+                  <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
+                    <PopoverTrigger asChild>
+                      <FormControl>
                         <Button
                           variant="outline"
                           role="combobox"
-                          aria-expanded={open}
-                          className="w-[200px] justify-between">
-                          {comboboxValue
+                          // aria-expanded={comboboxOpen}
+                          className={cn(
+                            "w-full justify-between",
+                            !field.value && "text-muted-foreground",
+                          )}>
+                          {field.value
                             ? clients.find(
-                                (client) => client.id === comboboxValue,
+                                (client) => client.id === field.value,
                               )?.name
                             : "Select client..."}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[200px] p-0">
-                        <Command>
-                          <CommandInput placeholder="Search client..." />
-                          <CommandList>
-                            <CommandEmpty>No client found.</CommandEmpty>
-                            <CommandGroup>
-                              {clients.map((client) => (
-                                <CommandItem
-                                  key={client.id}
-                                  value={client.id}
-                                  {...field}
-                                  onSelect={(currentValue) => {
-                                    setComboboxValue(
-                                      currentValue === comboboxValue
-                                        ? ""
-                                        : currentValue,
-                                    );
-                                    setOpen(false);
-                                  }}>
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4",
-                                      comboboxValue === client.id
-                                        ? "opacity-100"
-                                        : "opacity-0",
-                                    )}
-                                  />
-                                  {client.name}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </FormControl>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Search client..."
+                          className="h-9"
+                        />
+                        <CommandList>
+                          <CommandEmpty>No client found.</CommandEmpty>
+                          <CommandGroup>
+                            {clients.map((client) => (
+                              <CommandItem
+                                key={client.id}
+                                value={client.name}
+                                onSelect={() => {
+                                  form.setValue("clientId", client.id);
+                                  setComboboxOpen(false);
+                                }}>
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    client.id === field.value
+                                      ? "opacity-100"
+                                      : "opacity-0",
+                                  )}
+                                />
+                                {client.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -268,7 +262,13 @@ const ProjectForm = () => {
                 <FormItem>
                   <FormLabel>Budget</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      type="number"
+                      placeholder="0.00"
+                      step={0.01}
+                      min={0.0}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -286,17 +286,13 @@ const ProjectForm = () => {
                     defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
+                        <SelectValue placeholder="active" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="m@example.com">
-                        m@example.com
-                      </SelectItem>
-                      <SelectItem value="m@google.com">m@google.com</SelectItem>
-                      <SelectItem value="m@support.com">
-                        m@support.com
-                      </SelectItem>
+                      <SelectItem value="active">active </SelectItem>
+                      <SelectItem value="completed">completed</SelectItem>
+                      <SelectItem value="inactive">inactive</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -316,7 +312,7 @@ const ProjectForm = () => {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
+                            "w-full pl-3 text-left font-normal",
                             !field.value && "text-muted-foreground",
                           )}>
                           {field.value ? (
@@ -355,7 +351,7 @@ const ProjectForm = () => {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
+                            "w-full pl-3 text-left font-normal",
                             !field.value && "text-muted-foreground",
                           )}>
                           {field.value ? (

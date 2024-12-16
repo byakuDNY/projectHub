@@ -4,7 +4,9 @@ import timestamps from "./timestamp";
 
 const clientsTable = pgTable("clients", {
   id: uuid().primaryKey().defaultRandom(),
-  name: varchar({ length: 255 }).notNull(),
+  name: varchar({ length: 255 }).unique().notNull(),
+  // description: varchar({ length: 255 }),
+  // contact: varchar({ length: 255 }),
   email: varchar({ length: 320 }).unique().notNull(),
   phone: varchar({ length: 255 }).unique().notNull(),
   country: varchar({ length: 255 }).notNull(),

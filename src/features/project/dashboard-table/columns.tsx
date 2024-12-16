@@ -115,6 +115,7 @@ const columns: ColumnDef<ProjectsType>[] = [
   },
   {
     id: "actions",
+    header: "Actions",
     cell: ({ row }) => <DataTableRowActions<ProjectsType> row={row} />,
   },
 ];

@@ -1,9 +1,9 @@
 import {
+  date,
   index,
   numeric,
   pgTable,
   text,
-  timestamp,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -29,8 +29,8 @@ const projectsTable = pgTable(
       .notNull(),
     budget: numeric({ precision: 10, scale: 2 }).notNull(),
     status: varchar({ length: 255 }).default("active").notNull(),
-    startDate: timestamp().defaultNow().notNull(),
-    endDate: timestamp().notNull(),
+    startDate: date().defaultNow().notNull(),
+    endDate: date().notNull(),
     ...timestamps,
   },
   (projects) => [

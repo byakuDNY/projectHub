@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import {
@@ -85,6 +86,8 @@ const ProjectDataTable = <TData, TValue>({
     },
   });
 
+  const router = useRouter();
+
   return (
     <>
       {/* table component */}
@@ -114,6 +117,10 @@ const ProjectDataTable = <TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  onClick={() =>
+                    // @ts-expect-error: Property 'id' does not exist on type 'TData'.
+                    router.push(`/dashboard/projects/${row.original.id}`)
+                  }
                   data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
