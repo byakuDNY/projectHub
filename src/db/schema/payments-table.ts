@@ -18,4 +18,6 @@ const paymentsTable = pgTable("payments", {
   ...timestamps,
 });
 
+export type SelectPaymentsType = typeof paymentsTable.$inferSelect;
+export type InsertPaymentsType = typeof paymentsTable.$inferInsert;
 export default paymentsTable;

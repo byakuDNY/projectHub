@@ -11,5 +11,7 @@ const usersTable = pgTable("users", {
   // image: varchar({ length: 2048 }),
   ...timestamps,
 });
-export type UsersType = typeof usersTable;
+
+export type SelectUsersType = typeof usersTable.$inferSelect;
+export type InsertUsersType = typeof usersTable.$inferInsert;
 export default usersTable;

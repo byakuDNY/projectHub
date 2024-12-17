@@ -15,15 +15,17 @@ const projectFormSchema = z.object({
     .max(255, "Description must be at most 255 characters")
     .optional(),
   content: z.string().optional(),
-  clientId: z.string().uuid("Invalid Client ID"),
-  budget: z
-    .string()
-    .regex(/^\d+(\.\d{1,2})?$/, "Budget must be a valid numeric value"),
+  clientId: z.string().uuid({ message: "Invalid client" }),
+  budget: z.number({ message: "Invalid budget" }).min(0, {
+    message: "Budget must be greater than 0",
+  }),
   status: z
-    .enum(["active", "inactive", "completed", "canceled"])
+    .enum(["active", "inactive", "completed", "canceled"], {
+      message: "Invalid status",
+    })
     .default("active"),
-  startDate: z.date(),
-  endDate: z.date(),
+  startDate: z.date({ message: "Invalid start date" }),
+  endDate: z.date({ message: "Invalid end date" }),
 });
 
 export type ProjectFormSchema = z.infer<typeof projectFormSchema>;

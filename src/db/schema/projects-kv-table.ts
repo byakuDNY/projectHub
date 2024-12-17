@@ -11,5 +11,6 @@ const projectKVTable = pgTable("project_kv", {
   value: varchar({ length: 255 }).notNull(),
 });
 
-export type ProjectKVType = typeof projectKVTable.$inferInsert;
+export type SelectProjectKVType = typeof projectKVTable.$inferSelect;
+export type InsertProjectKVType = typeof projectKVTable.$inferInsert;
 export default projectKVTable;

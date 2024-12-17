@@ -38,5 +38,6 @@ const projectsTable = pgTable(
   ],
 );
 
-export type ProjectsType = typeof projectsTable.$inferInsert;
+export type SelectProjectsType = typeof projectsTable.$inferSelect;
+export type InsertProjectsType = typeof projectsTable.$inferInsert;
 export default projectsTable;

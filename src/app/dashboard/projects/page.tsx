@@ -1,7 +1,7 @@
-import { getProjects } from "@/features/project/create/actions";
-import ProjectForm from "@/features/project/create/project-form";
-import columns from "@/features/project/dashboard-table/columns";
-import DataTable from "@/features/project/dashboard-table/data-table";
+import { getProjects } from "@/features/projects/actions";
+import ProjectForm from "@/features/projects/components/form/create-project";
+import columns from "@/features/projects/components/table/columns";
+import DataTable from "@/features/projects/components/table/data-table";
 
 const Projects = async () => {
   const projects = await getProjects();
@@ -12,7 +12,6 @@ const Projects = async () => {
         <h1 className="text-2xl font-semibold">
           Projects({projects.length ?? 0})
         </h1>
-
         <ProjectForm />
       </div>
       {/* <ProjectsSummary/> */}

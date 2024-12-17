@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getUsersIdAndName } from "@/features/project/create/actions";
+import { getUsersIdAndName } from "@/features/projects/actions";
 
 export async function GET() {
   try {

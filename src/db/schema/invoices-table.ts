@@ -28,4 +28,6 @@ const invoicesTable = pgTable(
   ],
 );
 
+export type SelectInvoicesType = typeof invoicesTable.$inferSelect;
+export type InsertInvoicesType = typeof invoicesTable.$inferInsert;
 export default invoicesTable;

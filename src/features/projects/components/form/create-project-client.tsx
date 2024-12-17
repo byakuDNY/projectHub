@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -47,23 +47,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { createProject } from "@/features/projects/actions";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
-import { insertProject } from "./actions";
-import projectFormSchema from "./zod-schema";
+import projectFormSchema from "../../type";
 
-const ProjectForm = () => {
+interface ProjectFormClientProps {
+  clients: { id: string; name: string }[];
+}
+
+const ProjectFormClient = ({ clients }: ProjectFormClientProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [comboboxOpen, setComboboxOpen] = useState(false);
-  const [clients, setClients] = useState([
-    {
-      id: "",
-      name: "",
-    },
-  ]);
 
   const { toast } = useToast();
 
@@ -79,8 +77,9 @@ const ProjectForm = () => {
       name: "",
       description: "",
       content: "",
+      userId: "d915e012-bbad-49be-bb3d-d49670824179",
       clientId: "",
-      budget: "",
+      budget: 0,
       startDate: new Date(),
       endDate: getDateSevenDaysFromNow(),
     },
@@ -101,7 +100,7 @@ const ProjectForm = () => {
         startDate,
         endDate,
       } = values;
-      await insertProject({
+      await createProject({
         name,
         description,
         content,
@@ -129,28 +128,6 @@ const ProjectForm = () => {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch("/api/get-users", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        console.log(data);
-
-        setClients(data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    fetchUsers();
-  }, []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -391,4 +368,4 @@ const ProjectForm = () => {
   );
 };
 
-export default ProjectForm;
+export default ProjectFormClient;

@@ -6,8 +6,7 @@ import { desc, ne } from "drizzle-orm";
 
 import db from "@/db";
 import { clientsTable, projectsTable } from "@/db/schema";
-
-import { ProjectFormSchema } from "./zod-schema";
+import projectFormSchema, { ProjectFormSchema } from "@/features/projects/type";
 
 export const getProjects = async () => {
   try {
@@ -41,7 +40,7 @@ export const getUsersIdAndName = async () => {
   }
 };
 
-export const insertProject = async ({
+export const createProject = async ({
   name,
   description,
   content,
@@ -51,21 +50,32 @@ export const insertProject = async ({
   startDate,
   endDate,
 }: ProjectFormSchema) => {
-  const userId = "d915e012-bbad-49be-bb3d-d49670824179";
   try {
+    const validatedProject = projectFormSchema.parse({
+      name: name,
+      description: description,
+      content: content,
+      clientId: clientId,
+      budget: budget,
+      status: status,
+      startDate: startDate,
+      endDate: endDate,
+    });
+
+    const userId = "d915e012-bbad-49be-bb3d-d49670824179";
+
     await db
       .insert(projectsTable)
       .values({
-        name: name,
-        description: description,
-        content: content,
+        name: validatedProject.name,
+        description: validatedProject.description,
+        content: validatedProject.content,
         userId: userId,
-        clientId: clientId,
-        budget: budget,
-        status: status,
-        startDate: startDate,
-        endDate: endDate,
-        createdAt: new Date(),
+        clientId: validatedProject.clientId,
+        budget: validatedProject.budget,
+        status: validatedProject.status,
+        startDate: validatedProject.startDate,
+        endDate: validatedProject.endDate,
       })
       .execute();
 
