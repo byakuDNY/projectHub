@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -7,10 +5,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SelectInvoicesType } from "@/db/schema/invoices-table";
+
+interface Invoice {
+  id: string;
+  amount: number;
+  // Add other invoice fields as needed
+}
 
 interface InvoicesTabProps {
-  invoices: SelectInvoicesType[];
+  invoices: Invoice[];
 }
 
 export function InvoicesTab({ invoices }: InvoicesTabProps) {

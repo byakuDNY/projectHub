@@ -1,22 +1,26 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 import db from "@/db";
 import {
   clientsTable,
   invoicesTable,
+  paymentsTable,
   projectKVTable,
   projectsTable,
 } from "@/db/schema";
+import { SelectInvoicesType } from "@/db/schema/invoices-table";
+import { SelectPaymentsType } from "@/db/schema/payments-table";
+import { SelectProjectsType } from "@/db/schema/projects-table";
 
 export const getProjectById = async (projectId: string) => {
-  const project = await db
+  const project: SelectProjectsType[] = await db
     .select()
     .from(projectsTable)
     .where(eq(projectsTable.id, projectId))
     .execute();
-  return project;
+  return project[0];
 };
 
 export const updateProjectName = async (
@@ -42,32 +46,32 @@ export const updateProjectDescription = async (
 export const getProjectClient = async (projectId: string) => {
   const client = await db
     .select({
-      clientName: clientsTable.name,
-      clientDescription: clientsTable.description,
-      clientContact: clientsTable.contact,
-      clientEmail: clientsTable.email,
-      clientPhone: clientsTable.phone,
-      clientCountry: clientsTable.country,
+      name: clientsTable.name,
+      description: clientsTable.description,
+      contact: clientsTable.contact,
+      email: clientsTable.email,
+      phone: clientsTable.phone,
+      country: clientsTable.country,
     })
-    .from(projectsTable)
-    .leftJoin(clientsTable, eq(projectsTable.clientId, clientsTable.id))
+    .from(clientsTable)
+    .leftJoin(projectsTable, eq(clientsTable.id, projectsTable.clientId))
     .where(eq(projectsTable.id, projectId))
     .execute();
 
-  return client;
+  return client[0];
 };
 
-export const getProjectInvoice = async (projectId: string) => {
-  const invoices = await db
-    .select({
-      invoiceNumber: invoicesTable.amount,
-    })
-    .from(projectsTable)
-    .leftJoin(invoicesTable, eq(projectsTable.clientId, invoicesTable.id))
-    .where(eq(projectsTable.id, projectId))
-    .execute();
-  return invoices;
-};
+// export const getProjectInvoice = async (projectId: string) => {
+//   const invoices = await db
+//     .select({
+//       invoiceNumber: invoicesTable.amount,
+//     })
+//     .from(projectsTable)
+//     .leftJoin(invoicesTable, eq(projectsTable.clientId, invoicesTable.id))
+//     .where(eq(projectsTable.id, projectId))
+//     .execute();
+//   return invoices;
+// };
 
 // export const getProjectPayme = async nts(
 //   projectId: string,
@@ -104,6 +108,25 @@ export const getProjectInvoice = async (projectId: string) => {
 //     .from(projectKVTable)
 //     .where(eq(projectKVTable.projectId, projectId));
 // }
+export async function getProjectInvoices(
+  projectId: string,
+): Promise<SelectInvoicesType[]> {
+  return db
+    .select()
+    .from(invoicesTable)
+    .where(eq(invoicesTable.projectId, projectId));
+}
+
+export async function getProjectPayments(
+  projectId: string,
+): Promise<SelectPaymentsType[]> {
+  const invoices = await getProjectInvoices(projectId);
+  const invoiceIds = invoices.map((invoice) => invoice.id);
+  return db
+    .select()
+    .from(paymentsTable)
+    .where(sql`${paymentsTable.invoiceId} IN ${invoiceIds}`);
+}
 
 export const getProjectKVs = async (projectId: string) => {
   const kvs = await db
@@ -117,7 +140,7 @@ export const getProjectKVs = async (projectId: string) => {
   return kvs;
 };
 
-export const insertProjectKV = async (
+export const createProjectKV = async (
   projectId: string,
   key: string,
   value: string,

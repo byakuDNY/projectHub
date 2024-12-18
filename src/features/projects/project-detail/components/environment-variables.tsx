@@ -1,6 +1,8 @@
+"use client";
+
 import { useState } from "react";
 
-import { Edit2, Plus, Save, Trash2 } from "lucide-react";
+import { Edit2, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,60 +26,70 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 
-interface EnvVariable {
+import { createProjectKV, deleteProjectKV, updateProjectKV } from "../actions";
+
+interface KV {
+  id?: string;
   key: string;
   value: string;
 }
 
 interface EnvironmentVariablesProps {
-  envVariables: EnvVariable[];
-  onEnvVariablesChange: (variables: EnvVariable[]) => void;
+  projectId: string;
+  initialKVs: KV[];
 }
 
 export function EnvironmentVariables({
-  envVariables,
-  onEnvVariablesChange,
+  projectId,
+  initialKVs,
 }: EnvironmentVariablesProps) {
-  const [newEnvKey, setNewEnvKey] = useState("");
-  const [newEnvValue, setNewEnvValue] = useState("");
+  const [kvs, setKVs] = useState<KV[]>(initialKVs);
+  const [newKey, setNewKey] = useState("");
+  const [newValue, setNewValue] = useState("");
   const [bulkEditText, setBulkEditText] = useState("");
 
-  const addEnvVariable = () => {
-    if (newEnvKey && newEnvValue) {
-      onEnvVariablesChange([
-        ...envVariables,
-        { key: newEnvKey, value: newEnvValue },
-      ]);
-      setNewEnvKey("");
-      setNewEnvValue("");
+  const addKV = async () => {
+    if (newKey && newValue) {
+      const result = await createProjectKV(projectId, newKey, newValue);
+      setKVs([...kvs, { id: result[0].id, key: newKey, value: newValue }]);
+      setNewKey("");
+      setNewValue("");
     }
   };
 
-  const deleteEnvVariable = (index: number) => {
-    onEnvVariablesChange(envVariables.filter((_, i) => i !== index));
+  const updateKV = async (id: string, key: string, value: string) => {
+    await updateProjectKV(id, key, value);
+    setKVs(kvs.map((kv) => (kv.id === id ? { ...kv, key, value } : kv)));
   };
 
-  const updateEnvVariable = (index: number, key: string, value: string) => {
-    const updatedVariables = [...envVariables];
-    updatedVariables[index] = { key, value };
-    onEnvVariablesChange(updatedVariables);
+  const deleteKV = async (id: string) => {
+    await deleteProjectKV(id);
+    setKVs(kvs.filter((kv) => kv.id !== id));
   };
 
-  const saveEnvVariables = () => {
-    // Here you would typically save the environment variables to your backend
-    console.log("Saving environment variables:", envVariables);
-    // You can add an API call here to save the variables
-  };
-
-  const handleBulkEdit = () => {
+  const handleBulkEdit = async () => {
     const lines = bulkEditText.split("\n");
-    const newVariables = lines
+    const newKVs = lines
       .map((line) => {
         const [key, value] = line.split("=");
         return { key: key.trim(), value: value.trim() };
       })
-      .filter((variable) => variable.key && variable.value);
-    onEnvVariablesChange(newVariables);
+      .filter((kv) => kv.key && kv.value);
+
+    // Delete all existing KVs
+    for (const kv of kvs) {
+      if (kv.id) await deleteProjectKV(kv.id);
+    }
+
+    // Insert new KVs
+    const updatedKVs = [];
+    for (const kv of newKVs) {
+      const result = await createProjectKV(projectId, kv.key, kv.value);
+      updatedKVs.push({ id: result[0].id, ...kv });
+    }
+
+    setKVs(updatedKVs);
+    setBulkEditText("");
   };
 
   return (
@@ -85,68 +97,60 @@ export function EnvironmentVariables({
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Environment Variables</CardTitle>
-          <div className="space-x-2">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline">
-                  <Edit2 className="mr-2 h-4 w-4" />
-                  Bulk Edit
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Bulk Edit Environment Variables</DialogTitle>
-                  <DialogDescription>
-                    Enter your environment variables in KEY=VALUE format, one
-                    per line.
-                  </DialogDescription>
-                </DialogHeader>
-                <Textarea
-                  value={bulkEditText}
-                  onChange={(e) => setBulkEditText(e.target.value)}
-                  placeholder="API_KEY=your-api-key-here
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Edit2 className="mr-2 h-4 w-4" />
+                Bulk Edit
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Bulk Edit Environment Variables</DialogTitle>
+                <DialogDescription>
+                  Enter your environment variables in KEY=VALUE format, one per
+                  line.
+                </DialogDescription>
+              </DialogHeader>
+              <Textarea
+                value={bulkEditText}
+                onChange={(e) => setBulkEditText(e.target.value)}
+                placeholder="API_KEY=your-api-key-here
 DATABASE_URL=mongodb://localhost:27017/mydb"
-                  className="min-h-[200px]"
-                />
-                <DialogFooter>
-                  <Button onClick={handleBulkEdit}>Save Changes</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-            <Button onClick={saveEnvVariables}>
-              <Save className="mr-2 h-4 w-4" />
-              Save Variables
-            </Button>
-          </div>
+                className="min-h-[200px]"
+              />
+              <DialogFooter>
+                <Button onClick={handleBulkEdit}>Save Changes</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead classNameTableHead className="w-[40%]">
-                Key
-              </TableHead>
+              <TableHead className="w-[40%]">Key</TableHead>
               <TableHead className="w-[50%]">Value</TableHead>
               <TableHead className="w-[10%]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {envVariables.map((variable, index) => (
-              <TableRow key={index}>
+            {kvs.map((kv) => (
+              <TableRow key={kv.id}>
                 <TableCell>
                   <Input
-                    value={variable.key}
+                    value={kv.key}
                     onChange={(e) =>
-                      updateEnvVariable(index, e.target.value, variable.value)
+                      kv.id && updateKV(kv.id, e.target.value, kv.value)
                     }
                   />
                 </TableCell>
                 <TableCell>
                   <Input
-                    value={variable.value}
+                    value={kv.value}
                     onChange={(e) =>
-                      updateEnvVariable(index, variable.key, e.target.value)
+                      kv.id && updateKV(kv.id, kv.key, e.target.value)
                     }
                   />
                 </TableCell>
@@ -154,7 +158,7 @@ DATABASE_URL=mongodb://localhost:27017/mydb"
                   <Button
                     variant="destructive"
                     size="icon"
-                    onClick={() => deleteEnvVariable(index)}>
+                    onClick={() => kv.id && deleteKV(kv.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </TableCell>
@@ -165,15 +169,15 @@ DATABASE_URL=mongodb://localhost:27017/mydb"
         <div className="mt-4 flex gap-2">
           <Input
             placeholder="New Key"
-            value={newEnvKey}
-            onChange={(e) => setNewEnvKey(e.target.value)}
+            value={newKey}
+            onChange={(e) => setNewKey(e.target.value)}
           />
           <Input
             placeholder="New Value"
-            value={newEnvValue}
-            onChange={(e) => setNewEnvValue(e.target.value)}
+            value={newValue}
+            onChange={(e) => setNewValue(e.target.value)}
           />
-          <Button onClick={addEnvVariable}>
+          <Button onClick={addKV}>
             <Plus className="mr-2 h-4 w-4" /> Add
           </Button>
         </div>

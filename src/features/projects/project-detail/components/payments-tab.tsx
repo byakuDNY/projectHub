@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -7,10 +5,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SelectPaymentsType } from "@/db/schema/payments-table";
+
+interface Payment {
+  id: string;
+  amount: number;
+  status: string;
+  // Add other payment fields as needed
+}
 
 interface PaymentsTabProps {
-  payments: SelectPaymentsType[];
+  payments: Payment[];
 }
 
 export function PaymentsTab({ payments }: PaymentsTabProps) {
