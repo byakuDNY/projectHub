@@ -6,14 +6,14 @@ import { desc } from "drizzle-orm";
 
 import db from "@/db";
 import { clientsTable } from "@/db/schema";
-import { ClientsType } from "@/db/schema/clients-table";
+import { InsertClientsType } from "@/db/schema/clients-table";
 
 export const getClients = async () => {
   try {
     const clients = await db
       .select()
       .from(clientsTable)
-      .orderBy(desc(clientsTable.created_at), desc(clientsTable.updated_at))
+      .orderBy(desc(clientsTable.createdAt), desc(clientsTable.updatedAt))
       .execute();
     return clients;
   } catch (error) {
@@ -22,18 +22,22 @@ export const getClients = async () => {
   }
 };
 
-export const insertClient = async ({
+export const createClient = async ({
   name,
   email,
+  description,
+  contact,
   phone,
   country,
-}: ClientsType) => {
+}: InsertClientsType) => {
   try {
     await db
       .insert(clientsTable)
       .values({
         name: name,
         email: email,
+        description: description,
+        contact: contact,
         phone: phone,
         country: country,
       })

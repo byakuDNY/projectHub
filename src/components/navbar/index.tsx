@@ -14,9 +14,9 @@ import { NavItem } from "./nav-item";
 
 const NAV_ITEMS = [
   { name: "Home", href: "/" },
-  { name: "Features", href: "/features" },
-  { name: "Solutions", href: "/solutions" },
-  { name: "Pricing", href: "/pricing" },
+  // { name: "Features", href: "/features" },
+  // { name: "Solutions", href: "/solutions" },
+  // { name: "Pricing", href: "/pricing" },
 ];
 
 const Navbar = () => {

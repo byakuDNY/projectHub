@@ -2,11 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 
-import { desc, ne } from "drizzle-orm";
+import { desc, eq, ne } from "drizzle-orm";
 
 import db from "@/db";
-import { clientsTable, projectsTable } from "@/db/schema";
-import projectFormSchema, { ProjectFormSchema } from "@/features/projects/type";
+import { clientsTable, projectsTable, usersTable } from "@/db/schema";
+import projectFormSchema, {
+  ProjectFormSchema,
+} from "@/features/projects/zod-schema";
 
 export const getProjects = async () => {
   try {
@@ -44,7 +46,7 @@ export const createProject = async ({
   name,
   description,
   content,
-  userId,
+  appwriteId,
   clientId,
   budget,
   status,
@@ -52,17 +54,19 @@ export const createProject = async ({
   endDate,
 }: ProjectFormSchema) => {
   try {
-    console.log(budget);
     const validatedProject = projectFormSchema.parse({
       name: name,
       description: description,
       content: content,
-      userId: userId,
+      appwriteId: appwriteId,
       clientId: clientId,
+      budget: budget,
       status: status,
       startDate: startDate,
       endDate: endDate,
     });
+
+    const userId = await getUserIdByAppwriteId(validatedProject.appwriteId);
 
     await db
       .insert(projectsTable)
@@ -70,9 +74,9 @@ export const createProject = async ({
         name: validatedProject.name,
         description: validatedProject.description,
         content: validatedProject.content,
-        userId: validatedProject.userId,
+        userId: userId,
         clientId: validatedProject.clientId,
-        budget: budget.toString(),
+        budget: validatedProject.budget,
         status: validatedProject.status,
         startDate: validatedProject.startDate,
         endDate: validatedProject.endDate,
@@ -82,6 +86,23 @@ export const createProject = async ({
     revalidatePath("/dashboard/projects");
   } catch (error) {
     console.error("Error add project:", error);
+    throw error;
+  }
+};
+
+const getUserIdByAppwriteId = async (appwriteId: string) => {
+  try {
+    const user = await db
+      .select({
+        id: usersTable.id,
+      })
+      .from(usersTable)
+      .where(eq(usersTable.appwriteId, appwriteId))
+      .execute();
+
+    return user[0]?.id;
+  } catch (error) {
+    console.error("Error get user id by appwrite id:", error);
     throw error;
   }
 };

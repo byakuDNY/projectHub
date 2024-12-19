@@ -1,8 +1,8 @@
 import db from "@/db";
 import { clientsTable } from "@/db/schema";
-import columns from "@/features/clients/components/columns";
-import DataTable from "@/features/clients/components/data-table";
-import FormDialog from "@/features/clients/components/form-dialog";
+import ClientForm from "@/features/clients/components/form/create-client";
+import columns from "@/features/clients/components/table/columns";
+import DataTable from "@/features/clients/components/table/data-table";
 
 const Clients = async () => {
   const clients = await db.select().from(clientsTable).execute();
@@ -14,7 +14,7 @@ const Clients = async () => {
           Clients({clients.length ?? 0})
         </h1>
 
-        <FormDialog />
+        <ClientForm />
       </div>
       <DataTable columns={columns} data={clients} />
     </div>

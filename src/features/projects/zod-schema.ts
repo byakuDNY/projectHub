@@ -14,15 +14,10 @@ const projectFormSchema = z.object({
     })
     .max(255, "Description must be at most 255 characters")
     .optional(),
-  content: z.string().optional(),
-  userId: z.string().uuid({ message: "Invalid user" }),
+  content: z.string({ message: "Invalid string" }).optional(),
+  appwriteId: z.string({ message: "Invalidad string" }),
   clientId: z.string().uuid({ message: "Invalid client" }),
-  budget: z.preprocess(
-    (value) => (typeof value === "string" ? parseFloat(value) : value),
-    z
-      .number({ message: "Invalid budget" })
-      .min(0, { message: "Budget must be greater than 0" }),
-  ),
+  budget: z.number().nonnegative().multipleOf(0.01).default(0),
   status: z
     .enum(["active", "inactive", "completed", "canceled"], {
       message: "Invalid status",

@@ -25,54 +25,44 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
-import { insertClient } from "../form-actions";
+import { createClient } from "../../actions";
+import clientFormSchema from "../../zod-schema";
 
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(2, {
-      message: "Username must be at least 2 characters.",
-    })
-    .max(30, {
-      message: "Username must be at most 30 characters.",
-    }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  phone: z.string().min(8, {
-    message: "Phone number must be at least 8 characters.",
-  }),
-  country: z.string().min(2, {
-    message: "Country must be at least 2 characters.",
-  }),
-});
-
-const FormDialog = () => {
+const ClientForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [open, setOpen] = useState(false);
 
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof clientFormSchema>>({
+    resolver: zodResolver(clientFormSchema),
     defaultValues: {
       name: "",
       email: "",
+      description: "",
+      contact: "",
       phone: "",
       country: "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof clientFormSchema>) => {
     setIsLoading(true);
     setErrorMessage("");
 
     try {
-      const { name, email, phone, country } = values;
-      await insertClient({ name, email, phone, country });
+      await createClient({
+        name: values.name,
+        email: values.email,
+        description: values.description,
+        contact: values.contact,
+        phone: values.phone,
+        country: values.country,
+      });
       toast({
         title: "Success",
         description: "Client created successfully.",
@@ -138,16 +128,38 @@ const FormDialog = () => {
             />
             <FormField
               control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="contact"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact to</FormLabel>
+                  <FormControl>
+                    <Input type="text" placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="phone"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="+1 (555) 000-0000"
-                      {...field}
-                    />
+                    <Input type="tel" placeholder="+507 0000-0000" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -161,7 +173,7 @@ const FormDialog = () => {
                 <FormItem>
                   <FormLabel>Country</FormLabel>
                   <FormControl>
-                    <Input placeholder="United States" {...field} />
+                    <Input placeholder="Panama" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -183,4 +195,4 @@ const FormDialog = () => {
   );
 };
 
-export default FormDialog;
+export default ClientForm;

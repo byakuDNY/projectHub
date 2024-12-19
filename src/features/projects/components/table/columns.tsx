@@ -6,79 +6,8 @@ import { SelectProjectsType } from "@/db/schema/projects-table";
 import { statuses } from "@/lib/project-statuses";
 
 import { DataTableColumnHeader } from "./data-table/column-header";
-import { DataTableRowActions } from "./data-table/row-actions";
 
 const columns: ColumnDef<SelectProjectsType>[] = [
-  //   {
-  //     id: "select",
-  //     header: ({ table }) => (
-  //       <Checkbox
-  //         checked={
-  //           table.getIsAllPageRowsSelected() ||
-  //           (table.getIsSomePageRowsSelected() && "indeterminate")
-  //         }
-  //         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //         aria-label="Select all"
-  //       />
-  //     ),
-  //     cell: ({ row }) => (
-  //       <Checkbox
-  //         checked={row.getIsSelected()}
-  //         onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //         aria-label="Select row"
-  //       />
-  //     ),
-  //     enableSorting: false,
-  //     enableHiding: false,
-  //   },
-  //   {
-  //     accessorKey: "name",
-  //     header: "Name",
-  //   },
-  //   {
-  //     accessorKey: "email",
-  //     header: ({ column }) => {
-  //       return (
-  //         <Button
-  //           variant="ghost"
-  //           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-  //           Email
-  //           <ArrowUpDown className="ml-2 h-4 w-4" />
-  //         </Button>
-  //       );
-  //     },
-  //   },
-  //   {
-  //     accessorKey: "phone",
-  //     header: "Phone",
-  //   },
-  //   {
-  //     id: "actions",
-  //     cell: ({ row }) => {
-  //       const client = row.original;
-
-  //       return (
-  //         <DropdownMenu>
-  //           <DropdownMenuTrigger asChild>
-  //             <Button variant="ghost" className="h-8 w-8 p-0">
-  //               <span className="sr-only">Open menu</span>
-  //               <MoreHorizontal className="h-4 w-4" />
-  //             </Button>
-  //           </DropdownMenuTrigger>
-  //           <DropdownMenuContent align="end">
-  //             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //             <DropdownMenuItem
-  //               onClick={() => navigator.clipboard.writeText(client.name)}>
-  //               Copy payment ID
-  //             </DropdownMenuItem>
-  //             <DropdownMenuSeparator />
-  //             <DropdownMenuItem>View customer</DropdownMenuItem>
-  //             <DropdownMenuItem>View payment details</DropdownMenuItem>
-  //           </DropdownMenuContent>
-  //         </DropdownMenu>
-  //       );
-  //     },
-  //   },
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -114,19 +43,17 @@ const columns: ColumnDef<SelectProjectsType>[] = [
     },
   },
   {
-    id: "budget",
+    accessorKey: "budget",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Budget" />
     ),
-    cell: ({ row }) => row.getValue("budget"),
+    cell: ({ row }) => {
+      const budget = row.getValue("budget");
+      return `$${budget}`;
+    },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => <DataTableRowActions<SelectProjectsType> row={row} />,
   },
 ];
 
