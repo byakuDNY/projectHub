@@ -47,11 +47,12 @@ import projectFormSchema from "../../type";
 
 interface ProjectFormClientProps {
   clients: { id: string; name: string }[];
+  userId: string;
 }
 
-const ProjectFormClient = ({ clients }: ProjectFormClientProps) => {
+const ProjectFormClient = ({ clients, userId }: ProjectFormClientProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("error asasasasas");
+  const [errorMessage, setErrorMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [comboboxOpen, setComboboxOpen] = useState(false);
 
@@ -69,7 +70,7 @@ const ProjectFormClient = ({ clients }: ProjectFormClientProps) => {
       name: "",
       description: "",
       content: "",
-      userId: "d915e012-bbad-49be-bb3d-d49670824179",
+      userId: userId,
       clientId: "",
       budget: 0,
       startDate: new Date(),
@@ -86,6 +87,7 @@ const ProjectFormClient = ({ clients }: ProjectFormClientProps) => {
         name: values.name,
         description: values.description,
         content: values.content,
+        userId: values.userId,
         clientId: values.clientId,
         budget: values.budget,
         status: values.status,
@@ -165,7 +167,7 @@ const ProjectFormClient = ({ clients }: ProjectFormClientProps) => {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
+                <PopoverContent className="w-96 p-0">
                   <Command>
                     <CommandInput
                       placeholder="Search client..."
@@ -214,7 +216,7 @@ const ProjectFormClient = ({ clients }: ProjectFormClientProps) => {
                   type="number"
                   placeholder="0.00"
                   step={0.01}
-                  min={0.0}
+                  min={0}
                 />
               </FormControl>
               <FormMessage />

@@ -44,6 +44,7 @@ export const createProject = async ({
   name,
   description,
   content,
+  userId,
   clientId,
   budget,
   status,
@@ -51,18 +52,17 @@ export const createProject = async ({
   endDate,
 }: ProjectFormSchema) => {
   try {
+    console.log(budget);
     const validatedProject = projectFormSchema.parse({
       name: name,
       description: description,
       content: content,
+      userId: userId,
       clientId: clientId,
-      budget: budget,
       status: status,
       startDate: startDate,
       endDate: endDate,
     });
-
-    const userId = "d915e012-bbad-49be-bb3d-d49670824179";
 
     await db
       .insert(projectsTable)
@@ -70,9 +70,9 @@ export const createProject = async ({
         name: validatedProject.name,
         description: validatedProject.description,
         content: validatedProject.content,
-        userId: userId,
+        userId: validatedProject.userId,
         clientId: validatedProject.clientId,
-        budget: validatedProject.budget,
+        budget: budget.toString(),
         status: validatedProject.status,
         startDate: validatedProject.startDate,
         endDate: validatedProject.endDate,

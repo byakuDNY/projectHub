@@ -7,12 +7,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { getCurrentUser } from "@/features/auth/actions";
 import { getUsersIdAndName } from "@/features/projects/actions";
 
 import ProjectFormClient from "./create-project-client";
 
 const ProjectForm = async () => {
   const clients = await getUsersIdAndName();
+
+  const currentUser = await getCurrentUser();
 
   return (
     <Dialog>
@@ -26,7 +29,7 @@ const ProjectForm = async () => {
         <DialogDescription>
           Please fill in your project details below.
         </DialogDescription>
-        <ProjectFormClient clients={clients} />
+        <ProjectFormClient clients={clients} userId={currentUser.id} />
       </DialogContent>
     </Dialog>
   );

@@ -1,21 +1,16 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 
-import { X } from "lucide-react";
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   InputOTP,
   InputOTPGroup,
@@ -24,115 +19,125 @@ import {
 
 import { sendEmailOTP, verifySecret } from "../actions";
 
-const OtpModal = ({
-  accountId,
-  email,
-}: {
+interface OtpModalProps {
   accountId: string;
   email: string;
-}) => {
+  onClose: () => void;
+}
+
+const OtpModal = ({ accountId, email, onClose }: OtpModalProps) => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [resendDisabled, setResendDisabled] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
+    if (otp.length !== 6) return;
+
     setIsLoading(true);
-
-    console.log({ accountId, password });
+    setError("");
 
     try {
-      const sessionId = await verifySecret({ accountId, password });
-
-      console.log({ sessionId });
+      const sessionId = await verifySecret({ accountId, password: otp });
 
       if (sessionId) router.push("/dashboard");
     } catch (error) {
       console.log("Failed to verify OTP", error);
+      setError("Failed to verify code. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
-  const handleResendOtp = async () => {
-    await sendEmailOTP(email);
+  const handleResend = async () => {
+    setResendDisabled(true);
+    setCountdown(30);
+    setError("");
+
+    try {
+      await sendEmailOTP(email);
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            setResendDisabled(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (error) {
+      setError("Failed to resend code. Please try again.");
+      setResendDisabled(false);
+      console.log("Failed to resend OTP", error);
+    }
   };
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogContent className="max-x-[95%] space-y-4 rounded-xl bg-white px-4 py-10 outline-none sm:w-fit md:rounded-[30%] md:px-8">
-        <AlertDialogHeader className="relative flex justify-center">
-          <AlertDialogTitle className="h2 text-center">
-            Enter Your OTP
-            <X className="absolute -right-1 -top-7 w-4 cursor-pointer sm:-right-2 sm:top-4" />
-          </AlertDialogTitle>
-          <AlertDialogDescription className="text-center text-sm font-semibold">
-            We&apos;ve sent a code to <span className="pl-1">{email}</span>
-          </AlertDialogDescription>
-        </AlertDialogHeader>
+    <Dialog open onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Enter verification code</DialogTitle>
+          <DialogDescription>
+            We&apos;ve sent a code to {email}
+          </DialogDescription>
+        </DialogHeader>
 
-        <InputOTP maxLength={6} value={password} onChange={setPassword}>
-          <InputOTPGroup className="flex w-full justify-between gap-1 sm:gap-2">
-            <InputOTPSlot
-              index={0}
-              className="flex size-12 justify-center gap-5 rounded-xl border-2 text-lg font-medium shadow ring md:size-16"
-            />
-            <InputOTPSlot
-              index={1}
-              className="flex size-12 justify-center gap-5 rounded-xl border-2 text-lg font-medium shadow ring md:size-16"
-            />
-            <InputOTPSlot
-              index={2}
-              className="flex size-12 justify-center gap-5 rounded-xl border-2 text-lg font-medium shadow ring md:size-16"
-            />
-            <InputOTPSlot
-              index={3}
-              className="flex size-12 justify-center gap-5 rounded-xl border-2 text-lg font-medium shadow ring md:size-16"
-            />
-            <InputOTPSlot
-              index={4}
-              className="flex size-12 justify-center gap-5 rounded-xl border-2 text-lg font-medium shadow ring md:size-16"
-            />
-            <InputOTPSlot
-              index={5}
-              className="flex size-12 justify-center gap-5 rounded-xl border-2 text-lg font-medium shadow ring md:size-16"
-            />
-          </InputOTPGroup>
-        </InputOTP>
+        <div className="flex flex-col items-center space-y-4">
+          <InputOTP
+            maxLength={6}
+            value={otp}
+            onChange={setOtp}
+            disabled={isLoading}
+            className="gap-2">
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
 
-        <AlertDialogFooter>
-          <div className="flex w-full flex-col gap-4">
-            <AlertDialogAction
+          {error && <p className="text-sm text-red-500">{error}</p>}
+
+          <div className="flex w-full flex-col items-center gap-2">
+            <Button
               onClick={handleSubmit}
-              className="h-12 rounded-full bg-primary-foreground transition-all hover:bg-primary"
-              type="button">
-              Submit
-              {isLoading && (
-                <Image
-                  src="/assets/icons/loader.svg"
-                  alt="loader"
-                  width={24}
-                  height={24}
-                  className="ml-2 animate-spin"
-                />
+              disabled={otp.length !== 6 || isLoading}
+              className="w-full">
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  Verifying...
+                </div>
+              ) : (
+                "Verify"
               )}
-            </AlertDialogAction>
+            </Button>
 
-            <div className="mt-2 text-center text-sm font-semibold">
-              Didn&apos;t get a code?
-              <Button
-                type="button"
-                variant="link"
-                className="bg-primary pl-1"
-                onClick={handleResendOtp}>
-                Click to resend
-              </Button>
+            <div className="text-center text-sm">
+              <span className="text-muted-foreground">
+                Didn&apos;t receive the code?{" "}
+              </span>
+              {resendDisabled ? (
+                <span className="text-primary">Resend in {countdown}s</span>
+              ) : (
+                <Button
+                  variant="link"
+                  className="h-auto p-0"
+                  onClick={handleResend}>
+                  Click to resend
+                </Button>
+              )}
             </div>
           </div>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

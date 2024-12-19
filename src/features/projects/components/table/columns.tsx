@@ -2,13 +2,13 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 
-import { ProjectsType } from "@/db/schema/projects-table";
+import { SelectProjectsType } from "@/db/schema/projects-table";
 import { statuses } from "@/lib/project-statuses";
 
 import { DataTableColumnHeader } from "./data-table/column-header";
 import { DataTableRowActions } from "./data-table/row-actions";
 
-const columns: ColumnDef<ProjectsType>[] = [
+const columns: ColumnDef<SelectProjectsType>[] = [
   //   {
   //     id: "select",
   //     header: ({ table }) => (
@@ -114,9 +114,19 @@ const columns: ColumnDef<ProjectsType>[] = [
     },
   },
   {
+    id: "budget",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Budget" />
+    ),
+    cell: ({ row }) => row.getValue("budget"),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+  {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => <DataTableRowActions<ProjectsType> row={row} />,
+    cell: ({ row }) => <DataTableRowActions<SelectProjectsType> row={row} />,
   },
 ];
 

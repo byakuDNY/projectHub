@@ -16,10 +16,10 @@ export default function NotFound() {
       <p className="max-w-xl">
         You must have typed in a wrong address or the page was removed, in the
         meantime try again or{" "}
+        <Link href={"/"} className="text-blue-500">
+          return to the home page
+        </Link>
       </p>
-      <Link href={"/"} className="text-blue-600">
-        return to the home page
-      </Link>
       <Frown className="h-16 w-16 text-red-500" />
     </div>
   );
