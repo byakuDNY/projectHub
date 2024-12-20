@@ -25,7 +25,7 @@ const Testimonials = () => {
             <Card key={index}>
               <CardContent className="p-6">
                 <blockquote className="mb-4 text-lg">
-                  "{testimonial.quote}"
+                  &quot{testimonial.quote}&quot
                 </blockquote>
                 <p className="text-right font-semibold">
                   - {testimonial.author}
