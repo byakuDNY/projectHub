@@ -5,7 +5,6 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,16 +28,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
 import { createClient } from "../../actions";
-import clientFormSchema from "../../zod-schema";
+import clientFormSchema, { ClientFormSchema } from "../../zod-schema";
 
-const ClientForm = () => {
+const ClientForm = ({ userId }: { userId: string }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [open, setOpen] = useState(false);
 
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof clientFormSchema>>({
+  const form = useForm<ClientFormSchema>({
     resolver: zodResolver(clientFormSchema),
     defaultValues: {
       name: "",
@@ -47,10 +46,11 @@ const ClientForm = () => {
       contact: "",
       phone: "",
       country: "",
+      userId: userId,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof clientFormSchema>) => {
+  const onSubmit = async (values: ClientFormSchema) => {
     setIsLoading(true);
     setErrorMessage("");
 
@@ -62,6 +62,7 @@ const ClientForm = () => {
         contact: values.contact,
         phone: values.phone,
         country: values.country,
+        userId: values.userId,
       });
       toast({
         title: "Success",
@@ -95,7 +96,13 @@ const ClientForm = () => {
           Please fill in your client details below.
         </DialogDescription>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            onChange={() => {
+              console.log(form.getValues());
+              console.log(form.formState.errors);
+            }}
+            className="space-y-6">
             <FormField
               control={form.control}
               name="name"

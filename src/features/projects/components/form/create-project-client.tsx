@@ -54,10 +54,10 @@ import projectFormSchema, { ProjectFormSchema } from "../../zod-schema";
 
 interface ProjectFormClientProps {
   clients: { id: string; name: string }[];
-  appwriteId: string;
+  userId: string;
 }
 
-const ProjectFormClient = ({ clients, appwriteId }: ProjectFormClientProps) => {
+const ProjectFormClient = ({ clients, userId }: ProjectFormClientProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [open, setOpen] = useState(false);
@@ -77,7 +77,7 @@ const ProjectFormClient = ({ clients, appwriteId }: ProjectFormClientProps) => {
       name: "",
       description: "",
       content: "",
-      appwriteId: appwriteId,
+      userId: userId,
       clientId: "",
       budget: 0,
       status: "active",
@@ -95,7 +95,7 @@ const ProjectFormClient = ({ clients, appwriteId }: ProjectFormClientProps) => {
         name: values.name,
         description: values.description,
         content: values.content,
-        appwriteId: values.appwriteId,
+        userId: values.userId,
         clientId: values.clientId,
         budget: values.budget,
         status: values.status,

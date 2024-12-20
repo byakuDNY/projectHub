@@ -20,6 +20,7 @@ const clientFormSchema = z.object({
   country: z.string().min(2, {
     message: "Country must be at least 2 characters.",
   }),
+  userId: z.string({ message: "Invalid string" }),
 });
 
 export type ClientFormSchema = z.infer<typeof clientFormSchema>;

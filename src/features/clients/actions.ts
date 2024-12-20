@@ -2,17 +2,26 @@
 
 import { revalidatePath } from "next/cache";
 
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 import db from "@/db";
-import { clientsTable } from "@/db/schema";
+import { clientsTable, usersTable } from "@/db/schema";
 import { InsertClientsType } from "@/db/schema/clients-table";
 
-export const getClients = async () => {
+export const getClients = async (userId: string) => {
   try {
     const clients = await db
-      .select()
+      .select({
+        name: clientsTable.name,
+        email: clientsTable.email,
+        description: clientsTable.description,
+        contact: clientsTable.contact,
+        phone: clientsTable.phone,
+        country: clientsTable.country,
+      })
       .from(clientsTable)
+      .leftJoin(usersTable, eq(clientsTable.userId, usersTable.id))
+      .where(eq(usersTable.id, userId))
       .orderBy(desc(clientsTable.createdAt), desc(clientsTable.updatedAt))
       .execute();
     return clients;
@@ -29,6 +38,7 @@ export const createClient = async ({
   contact,
   phone,
   country,
+  userId,
 }: InsertClientsType) => {
   try {
     await db
@@ -40,6 +50,7 @@ export const createClient = async ({
         contact: contact,
         phone: phone,
         country: country,
+        userId: userId,
       })
       .execute();
 

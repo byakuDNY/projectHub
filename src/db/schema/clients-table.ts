@@ -1,6 +1,7 @@
 import { pgTable, uuid, varchar } from "drizzle-orm/pg-core";
 
 import timestamps from "./timestamp";
+import usersTable from "./users-table";
 
 const clientsTable = pgTable("clients", {
   id: uuid().primaryKey().defaultRandom(),
@@ -11,6 +12,9 @@ const clientsTable = pgTable("clients", {
   phone: varchar({ length: 255 }).unique().notNull(),
   country: varchar({ length: 255 }).notNull(),
   ...timestamps,
+  userId: uuid()
+    .references(() => usersTable.id, { onDelete: "cascade" })
+    .notNull(),
 });
 
 export type SelectClientsType = typeof clientsTable.$inferSelect;

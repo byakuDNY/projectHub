@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { desc, eq, ne } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 import db from "@/db";
 import { clientsTable, projectsTable, usersTable } from "@/db/schema";
@@ -10,11 +10,20 @@ import projectFormSchema, {
   ProjectFormSchema,
 } from "@/features/projects/zod-schema";
 
-export const getProjects = async () => {
+export const getProjects = async (accountId: string) => {
   try {
     const projects = await db
-      .select()
+      .select({
+        name: projectsTable.name,
+        description: projectsTable.description,
+        budget: projectsTable.budget,
+        status: projectsTable.status,
+        startDate: projectsTable.startDate,
+        endDate: projectsTable.endDate,
+      })
       .from(projectsTable)
+      .leftJoin(usersTable, eq(projectsTable.userId, usersTable.id))
+      .where(eq(usersTable.appwriteId, accountId))
       .orderBy(desc(projectsTable.createdAt), desc(projectsTable.updatedAt))
       .execute();
     return projects;
@@ -24,20 +33,21 @@ export const getProjects = async () => {
   }
 };
 
-export const getUsersIdAndName = async () => {
+export const getClientsIdAndName = async (userId: string) => {
   try {
-    const users = await db
+    const clients = await db
       .select({
         id: clientsTable.id,
         name: clientsTable.name,
       })
       .from(clientsTable)
-      .where(ne(clientsTable.id, "64962916-8e83-468c-b2d1-806244d7bf6e"))
+      .leftJoin(usersTable, eq(clientsTable.userId, usersTable.id))
+      .where(eq(usersTable.id, userId))
       .orderBy(desc(clientsTable.createdAt), desc(clientsTable.updatedAt))
       .execute();
-    return users;
+    return clients;
   } catch (error) {
-    console.error("Error getting users:", error);
+    console.error("Error getting clients:", error);
     throw error;
   }
 };
@@ -46,7 +56,7 @@ export const createProject = async ({
   name,
   description,
   content,
-  appwriteId,
+  userId,
   clientId,
   budget,
   status,
@@ -58,7 +68,7 @@ export const createProject = async ({
       name: name,
       description: description,
       content: content,
-      appwriteId: appwriteId,
+      userId: userId,
       clientId: clientId,
       budget: budget,
       status: status,
@@ -66,15 +76,13 @@ export const createProject = async ({
       endDate: endDate,
     });
 
-    const userId = await getUserIdByAppwriteId(validatedProject.appwriteId);
-
     await db
       .insert(projectsTable)
       .values({
         name: validatedProject.name,
         description: validatedProject.description,
         content: validatedProject.content,
-        userId: userId,
+        userId: validatedProject.userId,
         clientId: validatedProject.clientId,
         budget: validatedProject.budget,
         status: validatedProject.status,
@@ -90,7 +98,7 @@ export const createProject = async ({
   }
 };
 
-const getUserIdByAppwriteId = async (appwriteId: string) => {
+export const getUserIdByAppwriteId = async (appwriteId: string) => {
   try {
     const user = await db
       .select({

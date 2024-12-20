@@ -15,7 +15,9 @@ const projectFormSchema = z.object({
     .max(255, "Description must be at most 255 characters")
     .optional(),
   content: z.string({ message: "Invalid string" }).optional(),
-  appwriteId: z.string({ message: "Invalidad string" }),
+  userId: z
+    .string({ message: "Invalidad string" })
+    .uuid({ message: "Invalid userId" }),
   clientId: z.string().uuid({ message: "Invalid client" }),
   budget: z.number().nonnegative().multipleOf(0.01).default(0),
   status: z

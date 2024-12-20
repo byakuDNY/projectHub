@@ -1,10 +1,12 @@
+import { getCurrentUser } from "@/features/auth/actions";
 import { getProjects } from "@/features/projects/actions";
 import ProjectForm from "@/features/projects/components/form/create-project";
 import columns from "@/features/projects/components/table/columns";
 import DataTable from "@/features/projects/components/table/data-table";
 
 const Projects = async () => {
-  const projects = await getProjects();
+  const currentUser = await getCurrentUser();
+  const projects = await getProjects(currentUser.accountId);
 
   return (
     <div className="container mx-auto space-y-5 p-10">

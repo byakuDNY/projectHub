@@ -1,11 +1,14 @@
-import db from "@/db";
-import { clientsTable } from "@/db/schema";
+import { getCurrentUser } from "@/features/auth/actions";
+import { getClients } from "@/features/clients/actions";
 import ClientForm from "@/features/clients/components/form/create-client";
 import columns from "@/features/clients/components/table/columns";
 import DataTable from "@/features/clients/components/table/data-table";
+import { getUserIdByAppwriteId } from "@/features/projects/actions";
 
 const Clients = async () => {
-  const clients = await db.select().from(clientsTable).execute();
+  const currentUser = await getCurrentUser();
+  const userId = await getUserIdByAppwriteId(currentUser.accountId);
+  const clients = await getClients(userId);
 
   return (
     <div className="container mx-auto space-y-5 p-10">
@@ -14,7 +17,7 @@ const Clients = async () => {
           Clients({clients.length ?? 0})
         </h1>
 
-        <ClientForm />
+        <ClientForm userId={userId} />
       </div>
       <DataTable columns={columns} data={clients} />
     </div>

@@ -1,15 +1,20 @@
 import { getCurrentUser } from "@/features/auth/actions";
-import { getUsersIdAndName } from "@/features/projects/actions";
+import {
+  getClientsIdAndName,
+  getUserIdByAppwriteId,
+} from "@/features/projects/actions";
 
 import ProjectFormClient from "./create-project-client";
 
 const ProjectForm = async () => {
-  const clients = await getUsersIdAndName();
-
   const currentUser = await getCurrentUser();
-  return (
-    <ProjectFormClient clients={clients} appwriteId={currentUser.accountId} />
-  );
+
+  const userId = await getUserIdByAppwriteId(currentUser.accountId);
+
+  const clients = await getClientsIdAndName(userId);
+  console.log(clients);
+
+  return <ProjectFormClient clients={clients} userId={userId} />;
 };
 
 export default ProjectForm;
