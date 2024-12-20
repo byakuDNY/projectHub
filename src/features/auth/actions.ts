@@ -89,7 +89,6 @@ export const verifySecret = async ({
 }) => {
   try {
     const { account } = await createAdminClient();
-    console.log(account);
 
     const session = await account.createSession(accountId, password);
 
@@ -99,7 +98,6 @@ export const verifySecret = async ({
       secure: true,
       sameSite: "strict",
     });
-    console.log(session);
 
     return parseStringify({ sessionId: session.$id });
   } catch (error) {

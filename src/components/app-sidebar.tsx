@@ -1,15 +1,4 @@
-import {
-  ChevronUp,
-  DollarSign,
-  Handshake,
-  Home,
-  Inbox,
-  LayoutGrid,
-  Lock,
-  Settings,
-  User2,
-  Users,
-} from "lucide-react";
+import { ChevronUp, Home, LayoutGrid, User2, Users } from "lucide-react";
 
 import {
   Sidebar,
@@ -62,113 +51,113 @@ const sidebarLinks = [
   },
   {
     header: "Finance",
-    links: [
-      {
-        title: "Invoices",
-        href: "/dashboard/invoices",
-        icon: DollarSign,
-      },
-      {
-        title: "Payments",
-        href: "/dashboard/payments",
-        icon: Handshake,
-      },
-    ],
+    // links: [
+    //   {
+    //     title: "Invoices",
+    //     href: "/dashboard/invoices",
+    //     icon: DollarSign,
+    //   },
+    //   {
+    //     title: "Payments",
+    //     href: "/dashboard/payments",
+    //     icon: Handshake,
+    //   },
+    // ],
   },
   {
     header: "Team",
-    links: [
-      {
-        title: "Members",
-        href: "/dashboard/members",
-        icon: User2,
-      },
-      {
-        title: "Roles",
-        href: "/dashboard/roles",
-        icon: Lock,
-      },
-    ],
+    // links: [
+    //   {
+    //     title: "Members",
+    //     href: "/dashboard/members",
+    //     icon: User2,
+    //   },
+    //   {
+    //     title: "Roles",
+    //     href: "/dashboard/roles",
+    //     icon: Lock,
+    //   },
+    // ],
   },
   {
     header: "Communication",
-    links: [
-      {
-        title: "Emails",
-        href: "/dashboard/emails",
-        icon: Inbox,
-      },
-      {
-        title: "Bulk Emails",
-        href: "/dashboard/bulk-emails",
-        icon: Lock,
-      },
-    ],
+    // links: [
+    //   {
+    //     title: "Emails",
+    //     href: "/dashboard/emails",
+    //     icon: Inbox,
+    //   },
+    //   {
+    //     title: "Bulk Emails",
+    //     href: "/dashboard/bulk-emails",
+    //     icon: Lock,
+    //   },
+    // ],
   },
   {
     header: "Portfolio",
-    links: [
-      {
-        title: "Generate Portfolio",
-        href: "/dashboard/generate-portfolio",
-        icon: Inbox,
-      },
-    ],
+    // links: [
+    //   {
+    //     title: "Generate Portfolio",
+    //     href: "/dashboard/generate-portfolio",
+    //     icon: Inbox,
+    //   },
+    // ],
   },
   {
     header: "Brand",
-    links: [
-      {
-        title: "Settings",
-        href: "/dashboard/settings",
-        icon: Settings,
-      },
-      {
-        title: "File Manager",
-        href: "/dashboard/file-manager",
-        icon: Lock,
-      },
-    ],
+    // links: [
+    //   {
+    //     title: "Settings",
+    //     href: "/dashboard/settings",
+    //     icon: Settings,
+    //   },
+    //   {
+    //     title: "File Manager",
+    //     href: "/dashboard/file-manager",
+    //     icon: Lock,
+    //   },
+    // ],
   },
   {
     header: "Reports",
-    links: [
-      {
-        title: "Project Progress",
-        href: "/dashboard/project-progress",
-        icon: Inbox,
-      },
-      {
-        title: "Financial Summary",
-        href: "/dashboard/financial-summary",
-        icon: Inbox,
-      },
-      {
-        title: "Time Tracking",
-        href: "/dashboard/time-tracking",
-        icon: Inbox,
-      },
-    ],
+    // links: [
+    //   {
+    //     title: "Project Progress",
+    //     href: "/dashboard/project-progress",
+    //     icon: Inbox,
+    //   },
+    //   {
+    //     title: "Financial Summary",
+    //     href: "/dashboard/financial-summary",
+    //     icon: Inbox,
+    //   },
+    //   {
+    //     title: "Time Tracking",
+    //     href: "/dashboard/time-tracking",
+    //     icon: Inbox,
+    //   },
+    // ],
   },
   {
     header: "Settings",
-    links: [
-      {
-        title: "Account Settings",
-        href: "/dashboard/account-settings",
-        icon: Inbox,
-      },
-      {
-        title: "Notifications",
-        href: "/dashboard/notifications",
-        icon: Inbox,
-      },
-      {
-        title: "Integrations",
-        href: "/dashboard/integrations",
-        icon: Inbox,
-      },
-    ],
+    // links: [
+    //   {
+    //     title: "Account Settings",
+    //     href: "/dashboard/account-settings",
+    //     icon: Inbox,
+    //   },
+    //   {
+    //     title: "Notifications",
+    //     href: "/dashboard/notifications",
+    //     icon: Inbox,
+    //   },
+    //   {
+    //     title: "Integrations",
+    //     href: "/dashboard/integrations",
+    //     icon: Inbox,
+    //   },
+    // ],
   },
 ];
 

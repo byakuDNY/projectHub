@@ -12,7 +12,6 @@ const ProjectForm = async () => {
   const userId = await getUserIdByAppwriteId(currentUser.accountId);
 
   const clients = await getClientsIdAndName(userId);
-  console.log(clients);
 
   return <ProjectFormClient clients={clients} userId={userId} />;
 };
