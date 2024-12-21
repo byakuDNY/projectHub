@@ -175,7 +175,7 @@ export function AppSidebar({ name, email }: AppSidebarProps) {
             <SidebarGroupLabel>{header}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {links.map(({ title, href, icon: Icon }) => (
+                {links?.map(({ title, href, icon: Icon }) => (
                   <SidebarMenuItem key={title}>
                     <SidebarMenuButton asChild>
                       <a href={href}>
