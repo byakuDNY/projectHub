@@ -2,10 +2,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   getProjectById,
   getProjectClient,
-  getProjectKVs,
 } from "@/features/projects/project-detail/actions";
 import { ClientInformation } from "@/features/projects/project-detail/components/client-information";
-import { EnvironmentVariables } from "@/features/projects/project-detail/components/environment-variables";
 import { ProjectDetails } from "@/features/projects/project-detail/components/project-details";
 import { ProjectHeader } from "@/features/projects/project-detail/components/project-header";
 
@@ -24,7 +22,7 @@ export default async function ProjectDetailPage({
   const client = await getProjectClient(projectId);
   // const invoices = await getProjectInvoices(projectId);
   // const payments = await getProjectPayments(projectId);
-  const kvs = await getProjectKVs(projectId);
+  // const kvs = await getProjectKVs(projectId);
 
   return (
     <div className="container mx-auto space-y-6 p-6">
@@ -52,7 +50,7 @@ export default async function ProjectDetailPage({
         />
       </div>
 
-      <EnvironmentVariables projectId={projectId} initialKVs={kvs} />
+      {/* <EnvironmentVariables projectId={projectId} initialKVs={kvs} /> */}
 
       <Tabs defaultValue="invoices" className="w-full">
         <TabsList>
